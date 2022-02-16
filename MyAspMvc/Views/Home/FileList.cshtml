@@ -1,0 +1,37 @@
+﻿@model List<MyFileInfo>
+@{
+    ViewData["Title"] = "FileList";
+}
+
+<h1>FileList</h1>
+
+<table class="table table-responsive table-bordered">
+    <tr>
+        <th>Name</th>
+        <th>Directory</th>
+        <th>Last modify</th>
+        <th></th>
+    </tr>
+    @foreach (MyFileInfo file in Model)
+    {
+        @if (file.IsFolder)
+        {
+            <tr>
+                <td>@file.Name</td>
+                <td>@file.Path</td>
+                <td>@file.LastModify</td>
+                <td></td>
+            </tr>
+        }
+        else
+        {
+            <tr>
+                <td>@file.Name</td>
+                <td>@file.Path</td>
+                <td>@file.LastModify</td>
+                <td><a href="/Home/FileDownload?filename=@file.Name">Download</a></td>
+            </tr>
+        }
+
+    }
+</table>
