@@ -101,6 +101,14 @@ namespace MyAspMvc.Controllers
 
             return File(bytes, "application/octet-stream", fileName);
         }
+
+        public FileResult FileDownloadInFolder(string fileName, string inFolder)
+        {
+            string path = Path.Combine(inFolder, fileName);
+            byte[] bytes = System.IO.File.ReadAllBytes(path);
+
+            return File(bytes, "application/octet-stream", fileName);
+        }
         #endregion
     }
 }
