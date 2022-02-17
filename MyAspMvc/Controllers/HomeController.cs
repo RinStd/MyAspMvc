@@ -55,6 +55,23 @@ namespace MyAspMvc.Controllers
             
             return View();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> FileUploadInFolder(IFormFile file, string currentFolder)
+        {
+            MakeSomething makeSomething = new MakeSomething();
+            if (!makeSomething.IsFileExistsInFolder(file, currentFolder))
+            {
+                await makeSomething.UploadFileInFolder(file, currentFolder);
+                TempData["msg"] = $"{file.FileName} successfully upload.";
+            }
+            else
+            {
+                TempData["msg"] = $"{file.FileName} is exists in this folder.";
+            }
+
+            return RedirectToAction("FileListInFolder", "Home", new { inFolder = currentFolder});
+        }
         #endregion
 
         #region List files
@@ -62,7 +79,17 @@ namespace MyAspMvc.Controllers
         {
             string webRootPath = this._webHostEnvironment.WebRootPath;
             MakeSomething makeSomething = new MakeSomething();
-            List<MyFileInfo>  fileList = makeSomething.ViewFilesFolders(webRootPath);
+            List<MyFileInfo>  fileList = makeSomething.ViewFiles(webRootPath);
+
+            return View(fileList);
+        }
+
+        public IActionResult FileListInFolder(string inFolder)
+        {
+            MakeSomething makeSomething = new MakeSomething();
+            List<MyFileInfo> fileList = makeSomething.ViewFilesInFolder(inFolder);
+            
+            TempData["adress"] = inFolder;
 
             return View(fileList);
         }
