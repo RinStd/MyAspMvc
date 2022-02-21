@@ -29,6 +29,25 @@ namespace MyAspMvc.Controllers
         }
         #endregion // ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** *****
 
+        #region Cerate folder
+        [HttpPost]
+        public IActionResult FolderCreateInFolder(string nameFolder, string currentFolder)
+        {
+            MakeSomething makeSomething = new MakeSomething();
+            if (!makeSomething.IsFolderExists(nameFolder, currentFolder))
+            {
+                makeSomething.FolderCreate(nameFolder, currentFolder);
+                TempData["msg"] = $"{nameFolder} successfully create.";
+            }
+            else
+            {
+                TempData["msg"] = $"{nameFolder} is exists in this folder.";
+            }
+
+            return RedirectToAction("FileListInFolder", "Home", new { currentFolder = currentFolder });
+        }
+        #endregion // ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** *****
+
         #region Upload files
         public IActionResult FileUpload()
         {
@@ -67,7 +86,7 @@ namespace MyAspMvc.Controllers
                 TempData["msg"] = $"{file.FileName} is exists in this folder.";
             }
 
-            return RedirectToAction("FileListInFolder", "Home", new { inFolder = currentFolder});
+            return RedirectToAction("FileListInFolder", "Home", new { currentFolder = currentFolder });
         }
         #endregion // ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** *****
 
@@ -81,12 +100,12 @@ namespace MyAspMvc.Controllers
             return View(fileList);
         }
 
-        public IActionResult FileListInFolder(string inFolder)
+        public IActionResult FileListInFolder(string currentFolder)
         {
             MakeSomething makeSomething = new MakeSomething();
-            List<MyFileInfo> fileList = makeSomething.ViewFilesInFolder(inFolder);
+            List<MyFileInfo> fileList = makeSomething.ViewFilesInFolder(currentFolder);
             
-            TempData["adress"] = inFolder;
+            TempData["adress"] = currentFolder;
 
             return View(fileList);
         }
@@ -109,12 +128,21 @@ namespace MyAspMvc.Controllers
             return File(bytes, "application/octet-stream", fileName);
         }
 
-        public FileResult FileDownloadInFolder(string fileName, string inFolder)
+        public FileResult FileDownloadInFolder(string fileName, string currentFolder)
         {
-            string path = Path.Combine(inFolder, fileName);
+            string path = Path.Combine(currentFolder, fileName);
             byte[] bytes = System.IO.File.ReadAllBytes(path);
 
             return File(bytes, "application/octet-stream", fileName);
+        }
+        #endregion // ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** *****
+
+        #region Delete files
+        public IActionResult FileDeleteInFolder(string fileName, string currentFolder)
+        {
+            System.IO.File.Delete(Path.Combine(currentFolder, fileName));
+
+            return RedirectToAction("FileListInFolder", "Home", new { currentFolder = currentFolder });
         }
         #endregion // ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** *****
     }

@@ -4,6 +4,26 @@ namespace MyAspMvc.DoThings;
 
 public class MakeSomething
 {
+    public bool FolderCreate(string nameFolder, string currentFolder)
+    {
+        bool isCreated = false;
+
+        try
+        {
+            if (nameFolder != null)
+            {
+                Directory.CreateDirectory(Path.Combine(currentFolder, nameFolder));
+                isCreated = true;
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+
+        return isCreated;
+    }
+
     public async Task<bool> UploadFile(IFormFile file, string webRootPath)
     {
         bool isUploaded = false;
@@ -48,6 +68,25 @@ public class MakeSomething
         return isFileExists;
     }
 
+    public bool IsFolderExists(string nameFolder, string currentFolder)
+    {
+        bool isFolderExists = false;
+
+        try
+        {
+            if (nameFolder != null)
+            {
+                isFolderExists = Directory.Exists(Path.Combine(currentFolder, nameFolder));
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+
+        return isFolderExists;
+    }
+
     public List<MyFileInfo> ViewFiles(string webRootPath)
     {
         string[] filePaths = Directory.GetFiles(Path.Combine(webRootPath, "Upload"));
@@ -77,8 +116,6 @@ public class MakeSomething
         }
         return fileList;
     }
-
-    // ***** ***** ***** ***** ***** do things in current folder ***** ***** ***** ***** *****
 
     public async Task<bool> UploadFileInFolder(IFormFile file, string inFolder)
     {
@@ -182,7 +219,7 @@ public class ViewLastModifyFiles
         ListDirectory(webRootPath);
     }
 
-    public void ListDirectory(string webRootPath) // Если есть в директории папки.
+    public void ListDirectory(string webRootPath)
     {
         string[] subDirectoryFolders = Directory.GetDirectories(webRootPath);
         foreach (string subDirectory in subDirectoryFolders)

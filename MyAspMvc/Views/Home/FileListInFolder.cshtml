@@ -5,10 +5,23 @@
 
 <p>@TempData["adress"]</p>
 
-<form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="FileUploadInFolder"
-    asp-route-currentFolder="@TempData["adress"]">
+<form method="post" action="~/Home/FolderCreateInFolder">
+    <div class="form-group">
+        <input type="text" name="nameFolder" />
+        <input type="text" name="currentFolder" value="@TempData["adress"]" hidden />
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Create" />
+    </div>
+    <div class="form-group">
+        <p>@TempData["msg"]</p>
+    </div>
+</form>
+
+<form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="FileUploadInFolder">
     <div class="form-group">
         <input type="file" name="file">
+        <input type="text" name="currentFolder" value="@TempData["adress"]" hidden />
     </div>
     <div class="form-group">
         <input type="submit" value="Upload" />
@@ -31,7 +44,7 @@
         {
             <tr>
                 <td><a asp-controller="Home" asp-action="FileListinFolder"
-                    asp-route-inFolder="@file.Path">@file.Name</a></td>
+                    asp-route-currentFolder="@file.Path">@file.Name</a></td>
                 <td>@file.ParentPath</td>
                 <td>@file.LastModify</td>
                 <td></td>
@@ -43,8 +56,13 @@
                 <td>@file.Name</td>
                 <td>@file.ParentPath</td>
                 <td>@file.LastModify</td>
-                <td><a asp-controller="Home" asp-action="FileDownloadInFolder"
-                    asp-route-inFolder="@TempData["adress"]" asp-route-fileName="@file.Name">DownLoad</a></td>
+                <td>
+                    <a asp-controller="Home" asp-action="FileDownloadInFolder"
+                    asp-route-currentFolder="@TempData["adress"]" asp-route-fileName="@file.Name">DownLoad</a>
+
+                    <a asp-controller="Home" asp-action="FileDeleteInFolder"
+                    asp-route-currentFolder="@TempData["adress"]" asp-route-fileName="@file.Name">Delete</a>
+                </td>
             </tr>
         }
     }

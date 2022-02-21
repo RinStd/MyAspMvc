@@ -18,7 +18,7 @@
         {
             <tr>
                 <td><a asp-controller="Home" asp-action="FileListinFolder"
-                    asp-route-inFolder="@file.Path">@file.Name</a></td>
+                    asp-route-currentFolder="@file.Path">@file.Name</a></td>
                 <td>@file.ParentPath</td>
                 <td>@file.LastModify</td>
                 <td></td>
@@ -30,8 +30,12 @@
                 <td>@file.Name</td>
                 <td>@file.ParentPath</td>
                 <td>@file.LastModify</td>
-                <td><a asp-controller="Home" asp-action="FileDownload"
-                    asp-route-filename="@file.Name">Download</a></td>
+                <td>
+                    <a asp-controller="Home" asp-action="FileDownload"
+                    asp-route-fileName="@file.Name">Download</a> 
+                    @*<a asp-controller="Home" asp-action="FileDeleteInFolder"
+                    asp-route-filename="@file.Name">Delete</a>*@
+                </td>
             </tr>
         }
     }

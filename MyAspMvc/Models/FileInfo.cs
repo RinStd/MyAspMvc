@@ -9,4 +9,3 @@ public class MyFileInfo
     public DateTime LastModify { get; set; }
     public bool IsFolder { get; set; }
 }
-
