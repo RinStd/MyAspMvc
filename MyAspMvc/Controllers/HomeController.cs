@@ -10,6 +10,7 @@ namespace MyAspMvc.Controllers
         private readonly ILogger<HomeController> _logger;
         private IWebHostEnvironment _webHostEnvironment;
 
+        #region Default
         public HomeController(ILogger<HomeController> logger, IWebHostEnvironment webHostEnvironment)
         {
             _logger = logger;
@@ -21,18 +22,14 @@ namespace MyAspMvc.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+        #endregion // ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** *****
 
-        #region Upload file
+        #region Upload files
         public IActionResult FileUpload()
         {
             return View();
@@ -72,9 +69,9 @@ namespace MyAspMvc.Controllers
 
             return RedirectToAction("FileListInFolder", "Home", new { inFolder = currentFolder});
         }
-        #endregion
+        #endregion // ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** *****
 
-        #region List files
+        #region View list files
         public IActionResult FileList()
         {
             string webRootPath = this._webHostEnvironment.WebRootPath;
@@ -94,6 +91,16 @@ namespace MyAspMvc.Controllers
             return View(fileList);
         }
 
+        public IActionResult ViewLastModifyFilesInAllFolders()
+        {
+            string webRootPath = this._webHostEnvironment.WebRootPath;
+            ViewLastModifyFiles viewLastModifyFiles = new ViewLastModifyFiles();
+            List<MyFileInfo> fileList = viewLastModifyFiles.ViewFiles(Path.Combine(webRootPath, "Upload"));
+            return View(fileList);
+        }
+        #endregion // ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** *****
+
+        #region Download files
         public FileResult FileDownload(string fileName)
         {
             string path = Path.Combine(_webHostEnvironment.WebRootPath, "Upload", fileName);
@@ -109,6 +116,6 @@ namespace MyAspMvc.Controllers
 
             return File(bytes, "application/octet-stream", fileName);
         }
-        #endregion
+        #endregion // ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** ***** *****
     }
 }

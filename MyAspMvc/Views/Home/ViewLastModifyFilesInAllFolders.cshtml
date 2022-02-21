@@ -1,0 +1,22 @@
+﻿@model List<MyFileInfo>
+@{
+    ViewData["Title"] = "Last modify files";
+}
+
+<h1>Last modify files (10)</h1>
+
+<table class="table table-responsive table-bordered">
+    <tr>
+        <th>Name</th>
+        <th>Directory</th>
+        <th>Last modify</th>
+    </tr>
+    @foreach (MyFileInfo file in Model)
+    {
+        <tr>
+            <td>@file.Name</td>
+            <td>@file.ParentPath</td>
+            <td>@file.LastModify</td>
+        </tr>
+    }
+</table>

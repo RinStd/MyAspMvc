@@ -8,7 +8,7 @@ public class MakeSomething
     {
         bool isUploaded = false;
         string? path = null;
-        
+
         try
         {
             if (file != null)
@@ -32,12 +32,12 @@ public class MakeSomething
     public bool IsFileExists(IFormFile file, string webRootPath)
     {
         bool isFileExists = false;
-        
+
         try
         {
             if (file != null)
             {
-                isFileExists = File.Exists(Path.Combine(webRootPath, "Upload" ,file.FileName));
+                isFileExists = File.Exists(Path.Combine(webRootPath, "Upload", file.FileName));
             }
         }
         catch (Exception)
@@ -60,7 +60,7 @@ public class MakeSomething
                 Name = Path.GetFileName(folderPath),
                 ParentPath = webRootPath,
                 Path = folderPath,
-                LastModify = Directory.GetCreationTime(folderPath),
+                LastModify = Directory.GetLastWriteTime(folderPath),
                 IsFolder = true,
             });
         }
@@ -71,7 +71,7 @@ public class MakeSomething
                 Name = Path.GetFileName(filePath),
                 ParentPath = webRootPath,
                 Path = filePath,
-                LastModify = Directory.GetCreationTime(filePath),
+                LastModify = Directory.GetLastWriteTime(filePath),
                 IsFolder = false,
             });
         }
@@ -134,7 +134,7 @@ public class MakeSomething
                 Name = Path.GetFileName(folderPath),
                 ParentPath = inFolder,
                 Path = folderPath,
-                LastModify = Directory.GetCreationTime(folderPath),
+                LastModify = Directory.GetLastWriteTime(folderPath),
                 IsFolder = true,
             });
         }
@@ -145,10 +145,67 @@ public class MakeSomething
                 Name = Path.GetFileName(filePath),
                 ParentPath = inFolder,
                 Path = filePath,
-                LastModify = Directory.GetCreationTime(filePath),
+                LastModify = Directory.GetLastWriteTime(filePath),
                 IsFolder = false,
             });
         }
         return fileList;
+    }
+}
+
+public class ViewLastModifyFiles
+{
+    public List<MyFileInfo> fileList = new List<MyFileInfo>();
+
+    public List<MyFileInfo> ViewFiles(string webRootPath)
+    {
+        ListFiles(webRootPath);
+        SortFileList(fileList);
+        fileList.RemoveRange(10, (fileList.Count - 11));
+        return fileList;
+    }
+
+    public void ListFiles(string webRootPath)
+    {
+        string[] filePaths = Directory.GetFiles(webRootPath);
+        foreach (string filePath in filePaths)
+        {
+            fileList.Add(new MyFileInfo
+            {
+                Name = Path.GetFileName(filePath),
+                ParentPath = webRootPath,
+                Path = filePath,
+                LastModify = Directory.GetLastWriteTime(filePath),
+                IsFolder = false,
+            });
+        }
+        ListDirectory(webRootPath);
+    }
+
+    public void ListDirectory(string webRootPath) // Если есть в директории папки.
+    {
+        string[] subDirectoryFolders = Directory.GetDirectories(webRootPath);
+        foreach (string subDirectory in subDirectoryFolders)
+        {
+            ListFiles(subDirectory);
+        }
+    }
+
+    public void SortFileList(List<MyFileInfo> fileList)
+    {
+        List<MyFileInfo> tmpList = new List<MyFileInfo>();
+        for (int i = 0; i < fileList.Count; i++)
+        {
+            for (int j = i + 1; j < fileList.Count; j++)
+            {
+                if (fileList[i].LastModify < fileList[j].LastModify)
+                {
+                    tmpList.Add(fileList[i]);
+                    fileList[i] = fileList[j];
+                    fileList[j] = tmpList[0];
+                    tmpList.Clear();
+                }
+            }
+        }
     }
 }
